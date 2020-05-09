@@ -1,0 +1,40 @@
+Understanding how Linux boots up is very important in terms of effectively troubleshooting in case of system failure. When a system switched on and after few moment we get a login prompt. Have we try to find out what all stage of booting sequence has crossed and what happened behind the scene during system boots up.
+
+Power on: 
+* BIOS (Basic Input Output System) is a software program comes pre-built in a motherboard chipset.
+* BIOS loads and scans for devices such as Hard Disk, CD-ROM, RAM, etc.
+* BIOS searches for MBR of the primary hard drive, it scans for 1st stage loader (GRUB LILO) and hands over the responsibility to MBR.
+* Boot PROM/FLASH/BIOS is proficient of loading the MBR into RAM and executing it.
+
+MBR (Master Boot Record):
+* 512 bytes of space –> MBR
+* MBR contains the information of loader of most operating system e.g UNIX, Linux and WINDOWS
+* MBR holds the small binary information of 1st stage of loader
+* MBR consist physical sector of the first disk drive (i.e 512 bytes) and it’s not part of any partition.
+* MBR involve a mini executable programs and a table specify the primary partitions.
+* MBR also document which primary partition is ACTIVE.
+* The BIOS surrender rights to the first stage boot loader, which then scans partition table and finds second stage boot loader on the partition configured as bootable.
+
+Boot Loader:
+* The boot loader termed from 1st stage loader and loads itself into RAM. All this go on in milliseconds.
+* The default stage 2 boot loader is a GRUB (Grand Unified Boot Loader) or LILO (Linux Loader)
+* Once GRUB is loaded into RAM, then it’s search for the location of Kernel.
+* GRUB will scrutinize the map file to find the kernel image, that is located under (/boot) and load it.
+* GRUB loads the kernel (vmlinuz-version) from /boot partition
+
+
+NOTE: The /initrd directory should not be removed it is a temporary place holder for kernel to have quick access to the modules that it needs to start the system modules include device drivers.
+
+
+Kernel initialization highlights include:
+* initialize CPU components, eg, MMU
+* initialize the scheduler (PID 0)
+* mount the root filesystem in rw mode
+* fork off the init process (PID 1)
+
+In essence, kernel initialization does two things:
+* Start the core system of shared resource managers (RAM, processor and mass storage).
+* Starts a single process, /sbin/init.
+
+Init process (sbin/init) is the very fist process which loads all the various daemons and mounts all the partitions which are listed under /etc/fstab.
+
